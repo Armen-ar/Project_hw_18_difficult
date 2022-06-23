@@ -1,3 +1,6 @@
+from flask import request
+
+from app.dao.model.movie import Movie
 from app.dao.movie import MovieDAO
 
 
@@ -10,6 +13,21 @@ class MovieService:
         return self.dao.get_one(mid)
 
     def get_all(self):
+        # movies = self.dao.get_all()  # ПОКА НЕ РАБОТАЕ ФИЛЬТР
+        #
+        # director_id = request.args.get('director_id', None)
+        # genre_id = request.args.get('genre_id', None)
+        # year = request.args.get('year', None)
+        #
+        # if director_id:
+        #     movies = movies.filter(Movie.director_id == director_id)
+        # if genre_id:
+        #     movies = movies.filter(Movie.genre_id == genre_id)
+        # if year:
+        #     movies = movies.filter(Movie.year == year)
+        #
+        #     movies_serializer = movies.all()
+        #     movies_serializer.dump(movies, many=True)
 
         return self.dao.get_all()
 
