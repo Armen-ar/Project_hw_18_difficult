@@ -5,10 +5,8 @@ class DirectorService:
     def __init__(self, dao: DirectorDAO):
         self.dao = dao
 
-    def get_one(self, did):
+    def get(self, did=None):
+        """Метод, который выводит всех режиссёров или режиссёра по id"""
 
-        return self.dao.get_one(did)
+        return self.dao.get(did)
 
-    def get_all(self):
-
-        return self.dao.get_all()

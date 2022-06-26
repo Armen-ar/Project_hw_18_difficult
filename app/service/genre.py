@@ -5,10 +5,8 @@ class GenreService:
     def __init__(self, dao: GenreDAO):
         self.dao = dao
 
-    def get_one(self, gid):
+    def get(self, gid=None):
+        """Метод, который выводит все жанры или жанр по id"""
 
-        return self.dao.get_one(gid)
+        return self.dao.get(gid)
 
-    def get_all(self):
-
-        return self.dao.get_all()

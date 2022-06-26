@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, make_response
 from flask_restx import Namespace, Resource
 
 from app.dao.model.movie import MoviesSchema
@@ -6,46 +6,49 @@ from app.implemented import movie_service
 
 movie_ns = Namespace('movies')
 
-movie_schema = MoviesSchema()
-movies_schema = MoviesSchema(many=True)
-
 
 @movie_ns.route('/')
 class MoviesView(Resource):
-    def get(self):
-        select_movies = movie_service.get_all()
+    movie_schema = MoviesSchema()
+    movies_schema = MoviesSchema(many=True)
 
-        return movies_schema.dump(select_movies), 200
+    def get(self):
+        """Представление возвращает все фильмы или фильмы по режиссёрам, жанрам и годам"""
+
+        movies = self.movies_schema.dump(movie_service.get_movies(**request.args))
+
+        return movies, 200
 
     def post(self):
-        req_json = request.json
-        movie_service.create(req_json)
+        """Представление добавляет данные о новом фильме"""
+        new_movie = movie_service.create(request.json)
+        resp = make_response("", 201)
+        resp.headers['Location'] = f"{movie_ns.path}/{new_movie.id}"
 
-        return "", 201
+        return resp
 
 
 @movie_ns.route('/<int:uid>')
 class MovieView(Resource):
-    def get(self, uid: int):
-        movie = movie_service.get_one(uid)
+    movie_schema = MoviesSchema()
 
-        return movie_schema.dump(movie), 200
+    def get(self, uid: int):
+        """Представление возвращает фильм по id"""
+
+        return self.movie_schema.dump(movie_service.get_movies(uid)), 200
 
     def put(self, uid: int):
-        req_json = request.json
-        req_json["id"] = uid
-        movie_service.update(req_json)
+        """Представление обновляет данные фильма по id"""
 
-        return "", 204
+        return self.movie_schema.dump(movie_service.update(uid, request.json)), 204
 
     def patch(self, uid: int):
-        req_json = request.json
-        req_json["id"] = uid
-        movie_service.update_partial(req_json)
+        """Представление обновляет частично данные фильма по id"""
 
-        return "", 204
+        return self.movie_schema.dump(movie_service.update_partial(uid, request.json)), 204
 
     def delete(self, uid: int):
+        """Представление удаляет данные фильма по id"""
         movie_service.delete(uid)
 
         return "", 204

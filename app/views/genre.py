@@ -5,21 +5,22 @@ from app.implemented import genre_service
 
 genre_ns = Namespace('genres')
 
-genre_schema = GenresSchema()
-genres_schema = GenresSchema(many=True)
-
 
 @genre_ns.route('/')
-class MoviesView(Resource):
-    def get(self):
-        all_genres = genre_service.get_all()
+class GenresView(Resource):
+    genres_schema = GenresSchema(many=True)
 
-        return genres_schema.dump(all_genres), 200
+    def get(self):
+        """Представление возвращает все жанры"""
+
+        return self.genres_schema.dump(genre_service.get()), 200
 
 
 @genre_ns.route('/<int:uid>')
-class MovieView(Resource):
-    def get(self, uid: int):
-        genre = genre_service.get_one(uid)
+class GenreView(Resource):
+    genre_schema = GenresSchema()
 
-        return genre_schema.dump(genre), 200
+    def get(self, uid: int):
+        """Представление возвращает жанр по id"""
+
+        return self.genre_schema.dump(genre_service.get(uid)), 200

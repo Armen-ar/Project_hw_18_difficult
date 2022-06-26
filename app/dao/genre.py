@@ -5,8 +5,10 @@ class GenreDAO:
     def __init__(self, session):
         self.session = session
 
-    def get_one(self, aid):
-        return self.session.query(Genre).get(aid)
-
-    def get_all(self):
-        return self.session.query(Genre).all()
+    def get(self, gid=None):
+        """Метод, который выводит все жанры или жанр по id"""
+        query = self.session.query(Genre)
+        if gid:
+            return query.get(gid)
+        else:
+            return query.all()

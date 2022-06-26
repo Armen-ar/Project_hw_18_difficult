@@ -5,8 +5,10 @@ class DirectorDAO:
     def __init__(self, session):
         self.session = session
 
-    def get_one(self, aid):
-        return self.session.query(Director).get(aid)
-
-    def get_all(self):
-        return self.session.query(Director).all()
+    def get(self, did=None):
+        """Метод, который выводит всех режиссёров или режиссёра по id"""
+        query = self.session.query(Director)
+        if did:
+            return query.get(did)
+        else:
+            return query.all()
